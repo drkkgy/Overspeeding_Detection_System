@@ -124,9 +124,32 @@ else
 });
 });
 // ----------------------------------------------------------------------------
+app.get('/speed_violation_details/:Car_Number', (req,res,next)=>{
+
+MongoClient.connect('mongodb://ankit:1234567890@ds219879.mlab.com:19879/speed_analysis', (err,db)=> {
+
+    assert.equal(null,err);
+    console.log("Sucessfully connected to the mongodb client");
+    // sending the information
+ db.collection(req.params.Car_Number).find({}).toArray((err,result)=>{
+
+if(result == null)
+  {
+    res.json({"code": 404,"message":"This Car does not exist"})
+  }
+  res.json({"code": 200,result});
+});
+
+    
+});
+
+});
+
+
 
 // Server Started
-app.listen(port);
+//app.listen(port);
+app.listen(process.env.port || 8080);
 console.log('Test Server Started ! on port ' + port);
 
 
