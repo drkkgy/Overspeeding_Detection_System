@@ -18,8 +18,6 @@ var app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-
-
 // routes of the server
 
 app.get('/',(req,res,next) =>{
@@ -31,8 +29,43 @@ console.log("Request made to the server landing page");
 
 app.post('/Speed_stream',(req,res,next) => {
 
-if((req.body.Overspeed_Limit - req.body.Speed) < 0)
+// ---------------------------------------------------------------------------------------------------
+const request_option_overspeed = {
+	uri: "https://roads.googleapis.com/v1/speedLimits?path="+JSON.stringify(req.body.Location)+"&key=AIzaSyDSehieJnAXKODJZCcibjeJNSUVeHdOSWw",
+	method: "GET",
+	headers: {
+		"Content-Type": "application/json"
+	},
+}
+
+Request(request_option_overspeed,(err,res,result1)=>{
+if(!err && res.statusCode==200){
+	var result = JSON.parse(result1)
+   console.log(result);
+
+   
+ 
+
+// -----------------------------------------------------------------------------------------------------
+
+if((result.speedLimits[0].speedLimit - req.body.Speed) < 0)
 {
+
+// Connceting to google location api
+
+const request_option_location= {
+	uri: "https://maps.googleapis.com/maps/api/place/details/json?placeid="ChIJN1t_tDeuEmsRUsoyG83frY4"&key=AIzaSyDSehieJnAXKODJZCcibjeJNSUVeHdOSWw",
+	method: "GET",
+	headers: {
+		"Content-Type": "application/json"
+	},
+}
+
+Request(request_option_location,(err,res,result)=>{
+if(!err && res.statusCode==200){
+	var result = JSON.parse(result)
+   console.log(result);
+
 // connecting to mongodb
 // ---------------------------------------------------------------------------------
 MongoClient.connect('mongodb://<dbuser>:<dbpassword>@ds219879.mlab.com:19879/speed_analysis', (err,db)=> {
@@ -46,23 +79,44 @@ MongoClient.connect('mongodb://<dbuser>:<dbpassword>@ds219879.mlab.com:19879/spe
   "Speed": req.body.Speed,
   "Time-Stamp_key": timestamp('YYYY/MM/DD'),
   "Time-Stamp": timestamp('YYYY/MM/DD:mm:ss'),
-  "Overspeed_Limit": req.body.Overspeed_Limit,
-  "Speed_above_overspeed_limit": (req.body.Speed - req.body.Overspeed_Limit)
+  "Overspeed_Limit": result.speedLimits[0].speedLimit + " " + result.speedLimits[0].units,
+  "Speed_above_overspeed_limit": (req.body.Speed - result.speedLimits[0].speedLimit)
 })
 .then(function(result) {
   // process result
-  res.json({"code": 200 ,"message": "Data uploaded successfully on overspeeding "});
+  res.json({"code": 200 ,"message": "Data uploaded successfully on Car overspeeding "});
 })
 .catch()
 {
 	res.json({"code": 500 , "message": "Data upload unsuccessfull"})
 }
 });
+//google api location else ending here 
+//------------------------------------------------------------------------
+} 
+else 
+{
+	console.log("Overspeed_data=" + res.statusCode);
+} 
+});
+
+//-----------------------------------------------------------------------
 }
 else
 {
 	res.json({"code": 200 ,"message": "Car Not overspedding right now"});
-}   
+}
+
+// else ending for the google speed api request
+//-------------------------------------------------------------- 
+} 
+else 
+{
+	console.log("Overspeed_data=" + res.statusCode);
+} 
+
+// ------------------------------------------------------------------ 
+});
 });
 // ----------------------------------------------------------------------------
 
