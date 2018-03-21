@@ -1,0 +1,23 @@
+{
+  "name": "speed_limmiter_project",
+  "version": "1.0.0",
+  "description": "Application backend to detect overspeeding",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/drkkgy/Overspeeding_Detection_System.git"
+  },
+  "author": "Ankit",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/drkkgy/Overspeeding_Detection_System/issues"
+  },
+  "homepage": "https://github.com/drkkgy/Overspeeding_Detection_System#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
