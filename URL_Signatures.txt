@@ -1,0 +1,94 @@
+APi Signatures for overspeeding detection system
+------------------------------------------------------------Landing page for the server------------------------------------------------------
+https://overspeed-detection.azurewebsites.net/  <---------------GET Request will work on browser 
+-------------------------------------------------------------Upload user details to the server constantly where server records data only when overspeeding with a time stamp----------------------------------------------
+https://overspeed-detection.azurewebsites.net/Speed_stream  <-------This is a POST Request (Will not work on browser use postman)
+
+sample body for the post request 
+
+{
+  "Car_Number": "HR-23-AP-4444",  
+  "Location":  "-9.03741754643809|38.6896537",
+  "Speed": "250"
+  
+}
+
+Sample Response
+
+{"code": 200 ,"message": "Car Not overspedding right now"}
+
+or
+
+
+{"code": 200 ,"message": "Data uploaded successfully on Car overspeeding "}
+
+or
+
+{"code": 500 , "message": "Data upload unsuccessfull"}
+
+or
+
+
+-------------------------------------------------------------To derive the data for the car when ever it overspeeded 
+
+
+https://overspeed-detection.azurewebsites.net/speed_violation_details/:Car_Number  <--------GET Request will work on browser also
+
+Here Car_Number wil be replaced by the car number plate no
+
+Example
+
+http://127.0.0.1:8080/speed_violation_details/HR-23-AP-4444
+
+Sample response
+
+{
+    "code": 200,
+    
+"result": [
+        
+ {
+  "_id": "5ab2614df162e82b1c8793c4",
+            
+   "Car_Number": "HR-23-AP-4444",
+            
+   "Location": "\"PTE Luiz I, Portugal\"",
+            
+   "Speed": "250",
+            
+   "Time-Stamp_key": "2018/03/21",
+            
+   "Time-Stamp": "2018/03/21:12:37",
+            
+   "Overspeed_Limit": "200 KMPH",
+            
+   "Speed_above_overspeed_limit": 50
+        
+ },
+        
+ {
+ "_id": "5ab2616af162e82b1c8793c5",
+            
+   "Car_Number": "HR-23-AP-4444",
+            
+   "Location": "\"PTE Luiz I, Portugal\"",
+            
+   "Speed": "250",
+            
+   "Time-Stamp_key": "2018/03/21",
+            
+   "Time-Stamp": "2018/03/21:13:06",
+            
+   "Overspeed_Limit": "200 KMPH",
+            
+   "Speed_above_overspeed_limit": 50
+        
+ }
+    
+ ]
+
+}
+
+
+Created by Ankit
+
